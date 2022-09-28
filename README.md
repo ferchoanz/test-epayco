@@ -9,3 +9,4 @@ Pequeno sistema para la getion de pagos relacionados a clientes.
 - Hacer migracion de tablas en el proyecto soap-serve.
 - Arrancar el sistema de soap-serve mediante el comando: php artisan serve --port=8001.
 - Arrancar el sistema de rest-serve mediante el comando: php artisan serve.
+- la base de datos utilizada es MySql
