@@ -4,12 +4,12 @@ namespace App\Soap;
 
 use App\Entities\Billetera;
 use App\Entities\Cliente;
+use App\Entities\Pago;
 use App\Http\Resources\ErrorResource;
+use App\Http\Resources\PagoResource;
 use App\Http\Resources\SaldoResource;
 use App\Http\Resources\SuccessResource;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Exception;
-use GuzzleHttp\Psr7\Request;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
 use function Psy\bin;
@@ -37,16 +37,16 @@ class SoapProvider
 
         try {
             $billetera = EntityManager::createQueryBuilder()
-            ->from(Cliente::class, 'c')
-            ->innerJoin(Billetera::class, 'b')
-            ->select('b.id')
-            ->where("c.documento = '{$parametros[0]}'")
-            ->andWhere("c.celular = '{$parametros[1]}'")
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getSingleResult();
+                ->from(Cliente::class, 'c')
+                ->innerJoin(Billetera::class, 'b')
+                ->select('b.id')
+                ->where("c.documento = '{$parametros[0]}'")
+                ->andWhere("c.celular = '{$parametros[1]}'")
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
 
-            if(is_object($billetera)) {
+            if (is_object($billetera)) {
                 abort(404, $billetera->resource->message);
             }
 
@@ -55,7 +55,43 @@ class SoapProvider
             EntityManager::flush();
 
             return new SuccessResource(true);
+        } catch (Exception $error) {
+            return new ErrorResource($error);
+        }
+    }
 
+    public function pagar()
+    {
+        $parametros = func_get_args();
+
+        try {
+            $billetera = EntityManager::createQueryBuilder()
+                ->from(Cliente::class, 'c')
+                ->innerJoin(Billetera::class, 'b')
+                ->select('b.id, b.saldo, c.id as cliente_id, c.nombres, c.documento, c.email')
+                ->where("c.documento = '{$parametros[0]}'")
+                ->andWhere("c.celular = '{$parametros[1]}'")
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+
+            if (is_object($billetera)) {
+                abort(404, $billetera->resource->message);
+            }
+
+            if (intval($billetera['saldo'] < intval($parametros[2]))) {
+                abort(400, 'saldo insufiente');
+            }
+
+            $token = $this->generar_token($billetera['nombres'], $billetera['documento']);
+
+            $compra = new Pago($parametros[3], $token, $parametros[2], $billetera['cliente_id'], $billetera['id']);
+            EntityManager::persist($compra);
+            EntityManager::flush();
+
+            $billetera = array_merge($billetera, ['token' => $token, 'session_id' => $parametros[3]]);
+
+            return new PagoResource($billetera);
         } catch (Exception $error) {
             return new ErrorResource($error);
         }
@@ -67,24 +103,31 @@ class SoapProvider
 
         try {
             $billetera = EntityManager::createQueryBuilder()
-            ->from(Cliente::class, 'c')
-            ->innerJoin(Billetera::class, 'b')
-            ->select('b.id, b.saldo')
-            ->where("c.documento = '{$parametros[0]}'")
-            ->andWhere("c.celular = '{$parametros[1]}'")
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getSingleResult();
+                ->from(Cliente::class, 'c')
+                ->innerJoin(Billetera::class, 'b')
+                ->select('b.id, b.saldo')
+                ->where("c.documento = '{$parametros[0]}'")
+                ->andWhere("c.celular = '{$parametros[1]}'")
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
 
 
-            if(is_object($billetera)) {
+            if (is_object($billetera)) {
                 abort(404, $billetera->resource->message);
             }
 
             return new SaldoResource($billetera);
-
         } catch (Exception $error) {
             return new ErrorResource($error);
         }
+    }
+
+    public function generar_token($nombres, $documento)
+    {
+        $token = str_split(md5("{$nombres}{$documento}"));
+        $token = array_splice($token, 0, 6);
+        $token = implode($token);
+        return $token;
     }
 }

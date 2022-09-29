@@ -180,6 +180,17 @@ class Billetera extends \App\Entities\Billetera implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
+    public function getSaldo()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSaldo', []);
+
+        return parent::getSaldo();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setCliente(\App\Entities\Cliente $cliente)
     {
 
@@ -191,12 +202,12 @@ class Billetera extends \App\Entities\Billetera implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function recargar($valor)
+    public function recarga($valor)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'recargar', [$valor]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'recarga', [$valor]);
 
-        return parent::recargar($valor);
+        return parent::recarga($valor);
     }
 
 }

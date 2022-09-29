@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ErrorResource;
+use App\Http\Resources\PagoResource;
 use App\Http\Resources\SaldoResource;
 use App\Http\Resources\SuccessResource;
+use App\Mail\VerificarPago;
 use Error;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use SoapClient;
 use Illuminate\Support\Facades\Validator;
 
@@ -46,9 +49,8 @@ class ClienteController extends Controller
             if (is_bool($respuesta->resource) && $respuesta->resource) {
                 return new SuccessResource($respuesta);
             } else {
-                abort(500, $respuesta->resource->message);
+                abort($respuesta->resource->statusCode ?? 00, $respuesta->resource->message);
             }
-
         } catch (Exception $error) {
             return new ErrorResource($error);
         }
@@ -64,7 +66,7 @@ class ClienteController extends Controller
                 'celular' => 'required',
                 'valor' => 'required'
             ]);
-    
+
             if ($validador->fails()) {
                 return new ErrorResource($validador);
             }
@@ -74,14 +76,49 @@ class ClienteController extends Controller
                 $parametros["celular"],
                 $parametros["valor"]
             ]);
-            
+
             if (is_bool($respuesta->resource) && $respuesta->resource) {
                 return new SuccessResource(true);
             } else {
-                abort(404, $respuesta->resource->message);
+                abort($respuesta->resource->statusCode ?? 00, $respuesta->resource->message);
+            }
+        } catch (Exception $error) {
+            return new ErrorResource($error);
+        }
+    }
+
+    public function pagar(Request $request)
+    {
+        $parametros = $request->all();
+        try {
+
+            $validador = Validator::make($parametros, [
+                'documento' => 'required',
+                'celular' => 'required',
+                'valor' => 'required',
+                'session_id' => 'required'
+            ]);
+
+            if ($validador->fails()) {
+                return new ErrorResource($validador);
             }
 
-        } catch(Exception $error) {
+            $respuesta = $this->clienteSoap->__call('pagar', [
+                $parametros["documento"],
+                $parametros["celular"],
+                $parametros["valor"],
+                $parametros['session_id']
+            ]);
+
+            
+
+            if (is_array($respuesta->resource)) {
+                Mail::to($respuesta->resource['email'])->send(new VerificarPago($respuesta->resource['token'], $respuesta->resource['session_id']));
+                return new PagoResource(true);
+            } else {
+                abort($respuesta->resource->statusCode ?? 00, $respuesta->resource->message);
+            }
+        } catch (Exception $error) {
             return new ErrorResource($error);
         }
     }
@@ -95,7 +132,7 @@ class ClienteController extends Controller
                 'documento' => 'required',
                 'celular' => 'required',
             ]);
-    
+
             if ($validador->fails()) {
                 return new ErrorResource($validador);
             }
@@ -109,12 +146,10 @@ class ClienteController extends Controller
             if (is_array($respuesta->resource)) {
                 return new SaldoResource(['saldo' => $respuesta->resource['saldo']]);
             } else {
-                abort(404, $respuesta->resource->message);
+                abort($respuesta->resource->statusCode ?? 00, $respuesta->resource->message);
             }
-
-        } catch(Exception $error) {
+        } catch (Exception $error) {
             return new ErrorResource($error);
         }
     }
-
 }
