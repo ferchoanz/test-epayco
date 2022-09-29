@@ -14,3 +14,4 @@ Pequeno sistema para la getion de pagos relacionados a clientes.
 - version de php utilizada 8.1.10
 - version de MySql mysql  Ver 8.0.30-0ubuntu0.20.04.2 for Linux on x86_64 ((Ubuntu)).
 - es necesario activar el estnsion de SOAP para PHP.
+- dejo un archivo json con las prueba utilizadas en postman.

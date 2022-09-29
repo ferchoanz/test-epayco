@@ -7,7 +7,6 @@ use App\Http\Resources\PagoResource;
 use App\Http\Resources\SaldoResource;
 use App\Http\Resources\SuccessResource;
 use App\Mail\VerificarPago;
-use Error;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -30,7 +29,7 @@ class ClienteController extends Controller
         $validador = Validator::make($parametros, [
             'documento' => 'required',
             'nombres' => 'required',
-            'email' => 'required',
+            'email' => 'required|email',
             'celular' => 'required'
         ]);
 
@@ -64,7 +63,7 @@ class ClienteController extends Controller
             $validador = Validator::make($parametros, [
                 'documento' => 'required',
                 'celular' => 'required',
-                'valor' => 'required'
+                'valor' => 'required|numeric'
             ]);
 
             if ($validador->fails()) {
@@ -95,7 +94,7 @@ class ClienteController extends Controller
             $validador = Validator::make($parametros, [
                 'documento' => 'required',
                 'celular' => 'required',
-                'valor' => 'required',
+                'valor' => 'required|numeric',
                 'session_id' => 'required'
             ]);
 
