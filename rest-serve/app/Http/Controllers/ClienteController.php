@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ErrorResource;
+use App\Http\Resources\SaldoResource;
 use App\Http\Resources\SuccessResource;
 use Error;
 use Exception;
@@ -84,4 +85,36 @@ class ClienteController extends Controller
             return new ErrorResource($error);
         }
     }
+
+    public function consultar_saldo(Request $request)
+    {
+        $parametros = $request->all();
+        try {
+
+            $validador = Validator::make($parametros, [
+                'documento' => 'required',
+                'celular' => 'required',
+            ]);
+    
+            if ($validador->fails()) {
+                return new ErrorResource($validador);
+            }
+
+            $respuesta = $this->clienteSoap->__call('consultar_saldo', [
+                $parametros["documento"],
+                $parametros["celular"]
+            ]);
+
+
+            if (is_array($respuesta->resource)) {
+                return new SaldoResource(['saldo' => $respuesta->resource['saldo']]);
+            } else {
+                abort(404, $respuesta->resource->message);
+            }
+
+        } catch(Exception $error) {
+            return new ErrorResource($error);
+        }
+    }
+
 }

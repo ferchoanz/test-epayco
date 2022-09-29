@@ -37,6 +37,11 @@ class Billetera
         $this->saldo = $saldo;
     }
 
+    public function getSaldo()
+    {
+        return $this->saldo;
+    }
+
     public function setCliente(Cliente $cliente)
     {
         $this->cliente = $cliente;
