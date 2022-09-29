@@ -1,0 +1,220 @@
+{
+	"info": {
+		"_postman_id": "7060a7ee-7262-4dd6-96a7-0e8b8823fbd0",
+		"name": "test-epayco",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8882700"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8000/api/clientes/confirmar",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "token",
+							"value": "f9cccf",
+							"type": "text"
+						},
+						{
+							"key": "session_id",
+							"value": "hjkhbadjwhbadwd",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/clientes/confirmar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"clientes",
+						"confirmar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/api/clientes/pagar",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "documento",
+							"value": "1454545",
+							"type": "text"
+						},
+						{
+							"key": "celular",
+							"value": "1234",
+							"type": "text"
+						},
+						{
+							"key": "valor",
+							"value": "100",
+							"type": "text"
+						},
+						{
+							"key": "session_id",
+							"value": "hjkhbadjwhbadwd",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/clientes/pagar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"clientes",
+						"pagar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/api/clientes/consultar",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "documento",
+							"value": "1454545",
+							"type": "text"
+						},
+						{
+							"key": "celular",
+							"value": "1234",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/clientes/consultar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"clientes",
+						"consultar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/api/clientes/recarga",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "documento",
+							"value": "1454545",
+							"type": "text"
+						},
+						{
+							"key": "celular",
+							"value": "1234",
+							"type": "text"
+						},
+						{
+							"key": "valor",
+							"value": "5000",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/clientes/recarga",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"clientes",
+						"recarga"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/api/clientes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "documento",
+							"value": "1454545",
+							"type": "text"
+						},
+						{
+							"key": "nombres",
+							"value": "jose perez",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "correoperez@correo.com",
+							"type": "text"
+						},
+						{
+							"key": "celular",
+							"value": "1234",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/clientes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"clientes"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
