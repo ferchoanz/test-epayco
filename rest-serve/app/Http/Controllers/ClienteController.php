@@ -58,6 +58,16 @@ class ClienteController extends Controller
         $parametros = $request->all();
         try {
 
+            $validador = Validator::make($parametros, [
+                'documento' => 'required',
+                'celular' => 'required',
+                'valor' => 'required'
+            ]);
+    
+            if ($validador->fails()) {
+                return new ErrorResource($validador);
+            }
+
             $respuesta = $this->clienteSoap->__call('recarga_billetera', [
                 $parametros["documento"],
                 $parametros["celular"],

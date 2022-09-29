@@ -14,7 +14,7 @@ class ErrorResource extends JsonResource
      */
     public function toArray($request)
     {
-        $menssge = method_exists($this->resource, 'getMessage') ? $this->getMessage() : $this->errors()->all();
+        $menssge = method_exists($this->resource, 'errors') ?  $this->errors()->all() : $this->getMessage();
         $code = method_exists($this->resource, 'getStatusCode') ? $this->getStatusCode() : "00";
 
         return [

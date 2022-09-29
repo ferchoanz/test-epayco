@@ -40,6 +40,7 @@ class SoapProvider
             ->select('b.id')
             ->where("c.documento = '{$parametros[0]}'")
             ->andWhere("c.celular = '{$parametros[1]}'")
+            ->setMaxResults(1)
             ->getQuery()
             ->getSingleResult();
 
@@ -52,7 +53,7 @@ class SoapProvider
             EntityManager::flush();
 
             return new SuccessResource(true);
-            
+
         } catch (Exception $error) {
             return new ErrorResource($error);
         }

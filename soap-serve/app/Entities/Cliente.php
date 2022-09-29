@@ -20,7 +20,7 @@ class Cliente
     protected $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", unique=true)
      */
     protected $documento;
 
@@ -31,13 +31,13 @@ class Cliente
 
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", unique=true)
      */
     protected $email;
 
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", unique=true)
      */
     protected $celular;
 
