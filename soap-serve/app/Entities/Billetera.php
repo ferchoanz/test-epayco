@@ -51,4 +51,9 @@ class Billetera
     {
         $this->saldo += $valor;
     }
+
+    public function descuento($valor)
+    {
+        $this->saldo -= $valor;
+    }
 }

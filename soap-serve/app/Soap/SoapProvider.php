@@ -97,6 +97,41 @@ class SoapProvider
         }
     }
 
+    public function confirmar_pago()
+    {
+        $parametros = func_get_args();
+
+        try {
+            $pago = EntityManager::createQueryBuilder()
+                ->from(Pago::class, 'p')
+                ->select('p.id, p.valor, p.cliente_id, p.billetera_id')
+                ->where("p.token = '{$parametros[0]}'")
+                ->andWhere("p.session_id = '{$parametros[1]}'")
+                ->andWhere("p.estado = 'Pendiente'")
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+
+            if (is_object($pago)) {
+                abort(404, $pago->resource->message);
+            }
+
+            $billetera = EntityManager::find(Billetera::class, $pago['billetera_id']);
+            $billetera->descuento(intval($pago['valor']));
+            EntityManager::persist($billetera);
+            EntityManager::flush();
+
+            $pago = EntityManager::find(Pago::class, $pago['id']);
+            $pago->setEstado('Finalizado');
+            EntityManager::persist($pago);
+            EntityManager::flush();
+
+            return new SuccessResource(true);
+        } catch (Exception $error) {
+            return new ErrorResource($error);
+        }
+    }
+
     public function consultar_saldo()
     {
         $parametros = func_get_args();

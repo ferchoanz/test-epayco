@@ -152,4 +152,34 @@ class ClienteController extends Controller
             return new ErrorResource($error);
         }
     }
+
+    public function confirmar_pago(Request $request)
+    {
+        $parametros = $request->all();
+        try {
+
+            $validador = Validator::make($parametros, [
+                'session_id' => 'required',
+                'token' => 'required',
+            ]);
+
+            if ($validador->fails()) {
+                return new ErrorResource($validador);
+            }
+
+            $respuesta = $this->clienteSoap->__call('confirmar_pago', [
+                $parametros["token"],
+                $parametros["session_id"]
+            ]);
+
+
+            if (is_bool($respuesta->resource) && $respuesta->resource) {
+                return new SuccessResource(true);
+            } else {
+                abort($respuesta->resource->statusCode ?? 00, $respuesta->resource->message);
+            }
+        } catch (Exception $error) {
+            return new ErrorResource($error);
+        }
+    }
 }

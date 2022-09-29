@@ -66,4 +66,9 @@ class Pago
         $this->billetera_id = $billetera_id;
         $this->estado = 'Pendiente';
     }
+
+    public function setEstado($estado)
+    {
+        $this->estado = $estado;
+    }
 }
