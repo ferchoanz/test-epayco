@@ -42,6 +42,11 @@ class Cliente
     protected $celular;
 
     /**
+     * @ORM\oneToOne(targetEntity="Billetera", inversedBy="clientes", cascade={"persist"})
+     */
+    protected $billetera;
+
+    /**
      * @param $documento
      * @param $nombres
      * @param $email
@@ -54,5 +59,27 @@ class Cliente
         $this->nombres = $nombres;
         $this->email = $email;
         $this->celular = $celular;
+    }
+
+    public function getDocumento()
+    {
+        return $this->documento;
+    }
+
+    public function setBilletera(Billetera $billetera)
+    {
+        $this->billetera = $billetera;
+    }
+
+    public function inicializar_billetera()
+    {
+        $billetera = new Billetera(0);
+        $this->setBilletera($billetera);
+        $this->billetera->setCliente($this);
+    }
+
+    public function getBilletera()
+    {
+        return $this->billetera;
     }
 }

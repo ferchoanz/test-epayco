@@ -18,4 +18,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('clientes', "App\Http\Controllers\ClienteController@registro_cliente");
+Route::post('clientes', 'App\Http\Controllers\ClienteController@registro_cliente');
+Route::post('clientes/recarga', 'App\Http\Controllers\ClienteController@recarga_billetera');

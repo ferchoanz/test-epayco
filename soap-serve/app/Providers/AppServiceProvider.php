@@ -37,9 +37,4 @@ class AppServiceProvider extends ServiceProvider
             throw $error;
         }
     }
-
-    /**
-     * <?php
-     * $client = new SoapClient(null, ["location" =>  "http://localhost:8001" ,"uri" => "http://localhost:8001"]);
-     */
 }
